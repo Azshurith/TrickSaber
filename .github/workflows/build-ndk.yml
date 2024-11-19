@@ -57,12 +57,12 @@ jobs:
 
     - name: Put QPM on path
       run: |
-        chmod +x ./QPM/qpm-rust
+        chmod +x ./QPM/qpm
         echo "${GITHUB_WORKSPACE}/QPM" >> $GITHUB_PATH
 
     - name: QPM Collapse
       run: |
-        qpm-rust collapse
+        qpm collapse
     
     - name: QPM Dependencies Cache
       id: cache-qpm-deps
@@ -70,7 +70,7 @@ jobs:
       env:
         cache-name: cache-qpm-deps
       with:
-        path: /home/runner/.local/share/QPM-Rust/cache
+        path: /home/runner/.local/share/QPM/cache
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('qpm.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -79,7 +79,7 @@ jobs:
 
     - name: QPM Restore
       run: |
-        qpm-rust restore
+        qpm restore
 
     - name: List Post Restore
       run: |
@@ -88,13 +88,13 @@ jobs:
         echo libs:
         ls -la ${GITHUB_WORKSPACE}/extern/libs
         echo cache:
-        ls -la $HOME/.local/share/QPM-Rust/cache
+        ls -la $HOME/.local/share/QPM/cache
       
     - name: Build & Create Qmod
       run: |
         cd ${GITHUB_WORKSPACE}
-        qpm-rust qmod build
-        qpm-rust s qmod
+        qpm qmod build
+        qpm s qmod
 
     - name: Get Library Name
       id: libname

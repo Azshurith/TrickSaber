@@ -39,12 +39,12 @@ jobs:
 
     - name: Put QPM on path
       run: |
-        chmod +x ./QPM/qpm-rust
+        chmod +x ./QPM/qpm
         echo "${GITHUB_WORKSPACE}/QPM" >> $GITHUB_PATH
 
     - name: QPM Collapse
       run: |
-        qpm-rust collapse
+        qpm collapse
 
     - name: QPM Dependencies Cache
       id: cache-qpm-deps
@@ -52,7 +52,7 @@ jobs:
       env:
         cache-name: cache-qpm-deps
       with:
-        path: /home/runner/.local/share/QPM-Rust/cache
+        path: /home/runner/.local/share/QPM/cache
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('qpm.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -61,7 +61,7 @@ jobs:
 
     - name: QPM Restore
       run: |
-        qpm-rust restore
+        qpm restore
 
     - name: List Post Restore
       run: |
@@ -70,7 +70,7 @@ jobs:
         echo libs:
         ls -la ${GITHUB_WORKSPACE}/extern/libs
         echo cache:
-        ls -la $HOME/.local/share/QPM-Rust/cache
+        ls -la $HOME/.local/share/QPM/cache
 
     - name: Get Tag Version
       id: get_tag_version
@@ -81,12 +81,12 @@ jobs:
       
     - name: QPM Edit Version
       run: |
-        qpm-rust package edit --version "${{ steps.get_tag_version.outputs.VERSION }}"
+        qpm package edit --version "${{ steps.get_tag_version.outputs.VERSION }}"
         
     - name: Build & Create Qmod
       run: |
         cd ${GITHUB_WORKSPACE}
-        qpm-rust s qmod
+        qpm s qmod
 
     # Commit the change to the package, .vscode/c_cpp_properties.json, and Android.mk
     - name: Configure commit
@@ -153,8 +153,8 @@ jobs:
 
     - name: Change QPM Package Info
       run: |
-        qpm-rust package edit-extra --branchName "version-${{ steps.get_tag_version.outputs.TAG }}"
-        qpm-rust package edit-extra --modLink "${{ steps.upload_qmod_asset.outputs.browser_download_url }}"
+        qpm package edit-extra --branchName "version-${{ steps.get_tag_version.outputs.TAG }}"
+        qpm package edit-extra --modLink "${{ steps.upload_qmod_asset.outputs.browser_download_url }}"
 
     - name: Commit Changed package info
       run: |
