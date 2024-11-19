@@ -52,7 +52,7 @@ jobs:
       env:
         cache-name: cache-qpm-deps
       with:
-        path: /home/runner/.local/share/QPM/cache
+        path: /home/runner/.local/share/QPM-RS/cache
         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('qpm.json') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
